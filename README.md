@@ -57,5 +57,5 @@
 
 ## 更多`OAuth2`请参考
 > [理解OAuth 2.0](http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html) 或者 
-> [spring-oauth-server 数据库表说明](http://andaily.com/spring-oauth-server/db_table_description.html)
+> [spring-oauth-server 数据库表说明](http://andaily.com/spring-oauth-server/db_table_description.html) 或者
 > [springboot+spring security +oauth2.0 demo搭建（password模式）（认证授权端与资源服务端分离的形式）](https://www.cnblogs.com/hetutu-5238/p/10022963.html)
