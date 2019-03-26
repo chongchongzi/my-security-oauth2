@@ -1,162 +1,61 @@
-## Spring Security OAuth2
-> OAuth 是一个开放标准，允许用户让第三方应用访问该用户在某一网站上存储的私密的资源（如照片，视频，联系人列表），而不需要将用户名和密码提供给第三方应用。OAuth允许用户提供一个令牌，而不是用户名和密码来访问他们存放在特定服务提供者的数据。每一个令牌授权一个特定的网站在特定的时段内访问特定的资源。这样，OAuth让用户可以授权第三方网站访问他们存储在另外服务提供者的某些特定信息。更多`OAuth2`请参考[理解OAuth 2.0](http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html) 或者 [Spring Security OAuth2 Provider 之 数据库存储](https://rensanning.iteye.com/blog/2385162) 或者 [springboot+spring security +oauth2.0 demo搭建（password模式）（认证授权端与资源服务端分离的形式）](https://www.cnblogs.com/hetutu-5238/p/10022963.html)
-
 ## 项目准备
 
-1. 添加依赖
-	```xml
-	<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-security</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-web</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security.oauth</groupId>
-				<artifactId>spring-security-oauth2</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-test</artifactId>
-			</dependency>
+1. 导入SQL
+	```file
+	my-security-oauth2/src/main/resources/sql/my-security-oauth2.sql
 	```
-2. 配置认证服务器
-	```java
-	@Configuration
-	@EnableAuthorizationServer//是的，没做，就这么一个注解
-	public class MerryyouAuthorizationServerConfig {
-
-	}
-	```
-3. 配置资源服务器
-	```java
-	@Configuration
-	@EnableResourceServer//咦，没错还是一个注解
-	public class MerryyouResourceServerConfig {
-	}
-	```
-4. 配置`application.yml`客户端信息（不配置的话，控制台会默认打印clientid和clietSecret）
-
-	```shell
-	security:
-	  oauth2:
-		client:
-		  client-id: merryyou
-		  client-secret: merryyou
-	```
-5. 定义`MyUserDetailsService`
-	 ```java
-	@Component
-	public class MyUserDetailsService implements UserDetailsService {
-
-		@Override
-		public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-			return new User(username, "123456", AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
-		}
-	}
-	```
-6. 添加测试类`SecurityOauth2Test`(用户名密码模式)
-	```java
-	@RunWith(SpringRunner.class)
-	@SpringBootTest
-	@Slf4j
-	public class SecurityOauth2Test {
-		//端口
-		final static long PORT = 9090;
-		//clientId
-		final static String CLIENT_ID = "merryyou";
-		//clientSecret
-		final static String CLIENT_SECRET = "merryyou";
-		//用户名
-		final static String USERNAME = "admin";
-		//密码
-		final static String PASSWORD = "123456";
-		//获取accessToken得URI
-		final static String TOKEN_REQUEST_URI = "http://localhost:"+PORT+"/oauth/token?grant_type=password&username=" + USERNAME + "&password=" + PASSWORD+"&scope=all";
-		//获取用户信息得URL
-		final static String USER_INFO_URI = "http://localhost:"+PORT+"/user";
-
-		@Test
-		public void getUserInfo() throws Exception{
-			RestTemplate rest = new RestTemplate();
-			HttpHeaders headers = new HttpHeaders();
-			headers.add( "authorization", "Bearer " + getAccessToken() );
-			HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-			// pay attention, if using get with headers, should use exchange instead of getForEntity / getForObject
-			ResponseEntity<String> result = rest.exchange( USER_INFO_URI, HttpMethod.GET, entity, String.class, new Object[]{ null } );
-			log.info("用户信息返回的结果={}",JsonUtil.toJson(result));
-		}
-
-		/**
-		 * 获取accessToken
-		 * @return
-		 */
-		private String getAccessToken(){
-			RestTemplate rest = new RestTemplate();
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType( MediaType.TEXT_PLAIN );
-			headers.add("authorization", getBasicAuthHeader());
-			HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-			ResponseEntity<OAuth2AccessToken> resp = rest.postForEntity( TOKEN_REQUEST_URI, entity, OAuth2AccessToken.class);
-			if( !resp.getStatusCode().equals( HttpStatus.OK )){
-				throw new RuntimeException( resp.toString() );
-			}
-			OAuth2AccessToken t = resp.getBody();
-			log.info("accessToken={}",JsonUtil.toJson(t));
-			log.info("the response, access_token: " + t.getValue() +"; token_type: " + t.getTokenType() +"; "
-					+ "refresh_token: " + t.getRefreshToken() +"; expiration: " + t.getExpiresIn() +", expired when:" + t.getExpiration() );
-			return t.getValue();
-
-		}
-
-		/**
-		 * 构建header
-		 * @return
-		 */
-		private String getBasicAuthHeader(){
-			String auth = CLIENT_ID + ":" + CLIENT_SECRET;
-			byte[] encodedAuth = Base64.encodeBase64(auth.getBytes());
-			String authHeader = "Basic " + new String(encodedAuth);
-			return authHeader;
-		}
-	}
-	```
-
-授权码模式效果如下：
-
-授权链接：
-[http://localhost:9090/oauth/authorize?response_type=code&client_id=merryyou&redirect_uri=http://merryyou.cn&scope=all](http://localhost:9090/oauth/authorize?response_type=code&client_id=merryyou&redirect_uri=http://merryyou.cn&scope=all "http://localhost:9090/oauth/authorize?response_type=code&client_id=merryyou&redirect_uri=http://merryyou.cn&scope=all")
-
-[![https://raw.githubusercontent.com/longfeizheng/longfeizheng.github.io/master/images/security/spring-security-oauth201.gif](https://raw.githubusercontent.com/longfeizheng/longfeizheng.github.io/master/images/security/spring-security-oauth201.gif "https://raw.githubusercontent.com/longfeizheng/longfeizheng.github.io/master/images/security/spring-security-oauth201.gif")](https://raw.githubusercontent.com/longfeizheng/longfeizheng.github.io/master/images/security/spring-security-oauth201.gif "https://raw.githubusercontent.com/longfeizheng/longfeizheng.github.io/master/images/security/spring-security-oauth201.gif")
-
-测试类打印`accessToken`信息
-
-```shell
-2018-01-20 18:16:49.900  INFO 16136 --- [           main] cn.merryyou.security.SecurityOauth2Test  : accessToken={
-  "value": "8e5ea72c-d153-48f5-8ee7-9b5616fc43dc",
-  "expiration": "Jan 21, 2018 6:10:25 AM",
-  "tokenType": "bearer",
-  "refreshToken": {
-    "value": "7adfefec-c80c-4ff4-913c-4f161c47fbf1"
-  },
-  "scope": [
-    "all"
-  ],
-  "additionalInformation": {}
+2. 修改application-dev.properties下的mysql连接信息
+3. 启动com.chongzi.MyApplication
+4. 访问http://127.0.0.1:8080/swagger-ui.html
+5. 通过接口或者以下SQL添加用户，角色，菜单，用户角色，角色菜单，oauth客户端信息等相关信息
+ ```sql
+  INSERT INTO `oauth_client_details` VALUES ('1', null, 'c81e728d9d4c2f636f067f89cc14862c', 'app,openid', 'password,authorization_code', 'https://www.baidu.com', null, null, null, null, '');
+  INSERT INTO `sys_user` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', null, null, null, null, '1', 'admin', '2019-03-26 09:31:52', null);
+  INSERT INTO `sys_role` VALUES ('1', '测试角色', 'ROLE_AA', 'ROLE_AA', '1', 'chongzi', '2019-03-25 19:52:34', '2019-03-25 19:52:37');
+  INSERT INTO `sys_user_role` VALUES ('1', '1');
+  INSERT INTO `sys_menu` VALUES ('1', '测试菜单', 'ROLE_AA', 'ROLE_AA', '0', 'ROLE_AA', 'ROLE_AA', '1', '1', '1', '虫子', '2019-03-25 19:53:19', '2019-03-25 19:53:21');
+  INSERT INTO `sys_role_menu` VALUES ('1', '1');
+ ```
+7.访问http://127.0.0.1:8080/oauth/token?grant_type=password&username=admin&password=123456&client_id=1&client_secret=2
+```json
+{
+    "access_token": "34db999e-0840-4c82-91b7-d5040d7ffc4e",
+    "token_type": "bearer",
+    "expires_in": 43041,
+    "scope": "app openid"
+}
+```
+8.访问http://127.0.0.1:8080/sys-user/list
+```json
+{
+    "code": 200,
+    "msg": "success",
+    "data": {
+        "records": [
+            {
+                "id": 1,
+                "username": "admin",
+                "password": "e10adc3949ba59abbe56e057f20f883e",
+                "salt": null,
+                "phone": null,
+                "avatar": null,
+                "deptId": null,
+                "state": 1,
+                "author": "admin",
+                "createTime": "2019-03-26 09:31:52",
+                "updateTime": null
+            }
+        ],
+        "total": 2,
+        "size": 10,
+        "current": 1,
+        "searchCount": true,
+        "pages": 1
+    }
 }
 ```
 
-[Spring Security系列](https://longfeizheng.github.io/categories/#Security)
-
-## update2018年04月27日
-新增2.0-RELEASE分支，使用springboot 2.0.1.RELEASE版本
-## update2018年05月15日
-[springboot2.0-oauth2](https://github.com/longfeizheng/springboot2.0-oauth2)
-## update2018年05月17日
-[使用Spring MVC测试Spring Security Oauth2 API](https://longfeizheng.github.io/2018/05/16/%E4%BD%BF%E7%94%A8Spring-MVC%E6%B5%8B%E8%AF%95Spring-Security-Oauth2-API/)
-## update2018年05月22日
-[Spring Security Oauth2 permitAll()方法小记](https://longfeizheng.github.io/2018/05/21/Spring-Security-Oauth2-permitAll()%E6%96%B9%E6%B3%95%E5%B0%8F%E8%AE%B0/)
-## update2018年05月28日
-[Spring Security Oauth2 自定义 OAuth2 Exception](https://longfeizheng.github.io/2018/05/27/Spring-Security-Oauth2-%E8%87%AA%E5%AE%9A%E4%B9%89token-Exception/)
+## 更多`OAuth2`请参考
+> [理解OAuth 2.0](http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html) 或者 
+> [spring-oauth-server 数据库表说明](http://andaily.com/spring-oauth-server/db_table_description.html)
+> [springboot+spring security +oauth2.0 demo搭建（password模式）（认证授权端与资源服务端分离的形式）](https://www.cnblogs.com/hetutu-5238/p/10022963.html)

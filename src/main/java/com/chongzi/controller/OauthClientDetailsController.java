@@ -70,7 +70,7 @@ public class OauthClientDetailsController {
         return new R<>(oauthClientDetails);
     }
 
-    @ApiOperation(value = "保存oauth客户端信息")
+    @ApiOperation(value = "添加oauth客户端信息")
     @PostMapping("/save")
     public R save(@RequestBody OauthClientDetails dto) {
         QueryWrapper<OauthClientDetails> queryWrapper = new QueryWrapper<>();
