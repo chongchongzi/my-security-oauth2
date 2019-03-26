@@ -1,21 +1,19 @@
 /*
- Navicat Premium Data Transfer
+Navicat MySQL Data Transfer
 
- Source Server         : 本地5.7.23
- Source Server Type    : MySQL
- Source Server Version : 50723
- Source Host           : localhost:3306
- Source Schema         : my_security_oauth2
+Source Server         : 本地
+Source Server Version : 50723
+Source Host           : localhost:3306
+Source Database       : my_security_oauth2
 
- Target Server Type    : MySQL
- Target Server Version : 50723
- File Encoding         : 65001
+Target Server Type    : MYSQL
+Target Server Version : 50723
+File Encoding         : 65001
 
- Date: 26/03/2019 14:18:32
+Date: 2019-03-26 20:57:18
 */
 
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
+SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
 -- Table structure for oauth_access_token
@@ -33,6 +31,10 @@ CREATE TABLE `oauth_access_token` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='oauth访问令牌';
 
 -- ----------------------------
+-- Records of oauth_access_token
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for oauth_approvals
 -- ----------------------------
 DROP TABLE IF EXISTS `oauth_approvals`;
@@ -44,6 +46,10 @@ CREATE TABLE `oauth_approvals` (
   `expiresAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '过期时间',
   `lastModifiedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最终修改时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='oauth审批信息';
+
+-- ----------------------------
+-- Records of oauth_approvals
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for oauth_client_details
@@ -65,6 +71,10 @@ CREATE TABLE `oauth_client_details` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='oauth客户端信息';
 
 -- ----------------------------
+-- Records of oauth_client_details
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for oauth_client_token
 -- ----------------------------
 DROP TABLE IF EXISTS `oauth_client_token`;
@@ -78,6 +88,10 @@ CREATE TABLE `oauth_client_token` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='oauth客户端令牌';
 
 -- ----------------------------
+-- Records of oauth_client_token
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for oauth_code
 -- ----------------------------
 DROP TABLE IF EXISTS `oauth_code`;
@@ -85,6 +99,10 @@ CREATE TABLE `oauth_code` (
   `code` varchar(256) DEFAULT NULL COMMENT '授权码(未加密)',
   `authentication` blob COMMENT 'AuthorizationRequestHolder.java对象序列化后的二进制数据'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='oauth编码';
+
+-- ----------------------------
+-- Records of oauth_code
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for oauth_refresh_token
@@ -95,6 +113,10 @@ CREATE TABLE `oauth_refresh_token` (
   `token` blob COMMENT 'OAuth2RefreshToken.java对象序列化后的二进制数据',
   `authentication` blob COMMENT 'OAuth2Authentication.java对象序列化后的二进制数据'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='oauth刷新令牌';
+
+-- ----------------------------
+-- Records of oauth_refresh_token
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -118,6 +140,10 @@ CREATE TABLE `sys_menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='系统菜单权限信息';
 
 -- ----------------------------
+-- Records of sys_menu
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for sys_role
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role`;
@@ -132,7 +158,11 @@ CREATE TABLE `sys_role` (
   `updateTime` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `role_idx1_role_code` (`code`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='系统角色信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='系统角色信息';
+
+-- ----------------------------
+-- Records of sys_role
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -143,6 +173,10 @@ CREATE TABLE `sys_role_menu` (
   `menuId` int(11) NOT NULL COMMENT '菜单ID',
   PRIMARY KEY (`roleId`,`menuId`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='系统角色菜单信息';
+
+-- ----------------------------
+-- Records of sys_role_menu
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -162,7 +196,11 @@ CREATE TABLE `sys_user` (
   `updateTime` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `user_idx1_username` (`username`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='系统用户信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='系统用户信息';
+
+-- ----------------------------
+-- Records of sys_user
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -174,4 +212,6 @@ CREATE TABLE `sys_user_role` (
   PRIMARY KEY (`userId`,`roleId`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='系统用户角色信息';
 
-SET FOREIGN_KEY_CHECKS = 1;
+-- ----------------------------
+-- Records of sys_user_role
+-- ----------------------------
