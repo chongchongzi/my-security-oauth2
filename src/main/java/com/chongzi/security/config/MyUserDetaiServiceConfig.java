@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @Description:
+ * @Description: 初始化用户权限
  * @Author chongzi
  * @Date 2019/3/25 10:57
  */
