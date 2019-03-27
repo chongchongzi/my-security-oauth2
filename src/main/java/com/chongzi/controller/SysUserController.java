@@ -21,6 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -79,6 +80,7 @@ public class SysUserController extends ApiController {
 		return new R<>(sysUserService.page(page, queryWrapper));
 	}
 
+    @PreAuthorize("@pms.hasPermission('sys_user_view')")
 	@ApiOperation(value = "根据id查询用户信息")
 	@PostMapping("/getById")
 	public R<SysUser> getById(@RequestBody IdDto dto) {
