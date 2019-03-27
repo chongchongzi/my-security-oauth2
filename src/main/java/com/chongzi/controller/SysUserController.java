@@ -21,6 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +50,8 @@ public class SysUserController extends ApiController {
 	@PostMapping("/list")
 	@Secured("ROLE_AA")
 	public R<IPage<SysUser>> list(@RequestBody SysUserPageDto dto) {
+		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+		System.out.println(userId);
 		Page page = new Page();
 		if (dto.getCurrent() != null) {
 			page.setCurrent(dto.getCurrent());
@@ -177,7 +180,6 @@ public class SysUserController extends ApiController {
 	@ApiOperation(value = "用户登录")
 	@PostMapping("/login")
 	public R<SysUser> login(@RequestBody SysUserDto dto) {
-		JSONObject json = new JSONObject();
 		QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
 		SysUser obj = new SysUser();
 		obj.setUsername(dto.getUsername());
@@ -187,12 +189,9 @@ public class SysUserController extends ApiController {
 		if (one == null) {
 			return new R<>(null,"用户不存在",CommonConstant.FAIL);
 		}
-		String salt = one.getSalt();
-		String pwmd5 = MD5Util.MD5(dto.getPassword() + salt);
+		String pwmd5 = EncodePassword.MD5(dto.getPassword());
 		if (pwmd5.equals(one.getPassword())) {
-			String encode = Base64Util.encode(dto.getUsername() + CommonConstant.USER_PASSWORD_SPLIT + pwmd5);
-			json.put(CommonConstant.USER_TOKEN, encode);
-			return new R<>(one, "登录成功", CommonConstant.SUCCESS);
+			return new R<>(null, "登录成功", CommonConstant.SUCCESS);
 		}
 		return new R<>(null,"密码错误",CommonConstant.FAIL);
 	}

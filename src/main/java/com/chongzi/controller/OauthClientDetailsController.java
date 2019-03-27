@@ -8,15 +8,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chongzi.common.CommonConstant;
 import com.chongzi.common.R;
 import com.chongzi.dto.ClientIdDto;
-import com.chongzi.dto.IdDto;
 import com.chongzi.dto.OauthClientDetailsPageDto;
-import com.chongzi.dto.SysUserDto;
 import com.chongzi.entity.OauthClientDetails;
-import com.chongzi.entity.SysUser;
-import com.chongzi.enums.StateEnum;
 import com.chongzi.security.EncodePassword;
 import com.chongzi.service.IOauthClientDetailsService;
-import com.chongzi.utils.MD5Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDateTime;
 
 /**
  * <p>

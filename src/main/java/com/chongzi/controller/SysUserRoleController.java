@@ -39,7 +39,7 @@ public class SysUserRoleController {
     @Autowired
     private ISysUserRoleService sysUserRoleService;
 
-    @ApiOperation(value = "查询角色菜单列表")
+    @ApiOperation(value = "查询用户角色列表")
     @PostMapping("/list")
     public R<IPage<SysUserRole>> list(@RequestBody SysUserRolePageDto dto) {
         Page page = new Page();
@@ -60,7 +60,7 @@ public class SysUserRoleController {
         return new R<>(sysUserRoleService.page(page, queryWrapper));
     }
 
-    @ApiOperation(value = "保存角色菜单")
+    @ApiOperation(value = "保存用户角色")
     @PostMapping("/save")
     public R add(@RequestBody SysUserRole entity) {
         boolean res = sysUserRoleService.save(entity);
@@ -70,7 +70,7 @@ public class SysUserRoleController {
         return new R<>(Boolean.FALSE, "保存失败", CommonConstant.FAIL);
     }
 
-    @ApiOperation(value = "物理删除角色菜单")
+    @ApiOperation(value = "物理删除用户角色")
     @PostMapping("/delete")
     public R delete(@RequestBody SysUserRole dto) {
         QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();

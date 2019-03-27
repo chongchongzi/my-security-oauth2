@@ -7,20 +7,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 /**
- * @Description:
- * @author: zhoum
- * @Date: 2018-11-22
- * @Time: 17:09
+ * @Description: 解决跨域问题
+ * @Author chongzi
+ * @Date 2019/3/25 10:57
  */
 @Configuration
 public class WebOrignAllowConfig {
-    /**
-     * @return org.springframework.web.filter.CorsFilter
-     * @Author zhoum
-     * @Description 解决跨域问题
-     * @Date 17:10 2018-11-22
-     * @Param []
-     **/
+
     @Bean
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
