@@ -25,7 +25,8 @@
     "scope": "app openid"
 }
 ```
-8.访问http://127.0.0.1:8080/sys-user/list；在headers里面带上key=Content-Type,value=application/json;key=Authorization,Bearer 34db999e-0840-4c82-91b7-d5040d7ffc4e
+8.访问http://127.0.0.1:8080/sys-user/list
+  在headers里面带上key=Content-Type,value=application/json;key=Authorization,Bearer 34db999e-0840-4c82-91b7-d5040d7ffc4e
 ```json
 {
     "code": 200,
